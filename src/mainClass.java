@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 
 
 public class mainClass extends JFrame implements ActionListener{
@@ -11,7 +12,7 @@ public class mainClass extends JFrame implements ActionListener{
 
 	JPanel pnlBtns, pnlText, pnlFile;
 	JButton btnUpper, btnLower, btnHashtag, btnLocate, btnConcat;
-	JButton btnCreateFile, btnDeleteFile, btnReadFile, btnWriteFile;
+	JButton btnCreateFile, btnDeleteFile, btnReadFile, btnWriteFile, btnPerms;
 	JTextField txtInputFilePath, txtOutputFilePath;
 
 	JLabel lbl, lblFiles, lblInputFile, lblOutputFile;
@@ -19,7 +20,7 @@ public class mainClass extends JFrame implements ActionListener{
 	public mainClass() {
 		// set frame's attributes
 		super("Application");
-		this.setSize(800, 300);
+		this.setSize(800, 400);
 		this.setResizable(false);
 		this.setVisible(true);
 		this.setLayout(new BorderLayout());
@@ -44,7 +45,8 @@ public class mainClass extends JFrame implements ActionListener{
 		
 
 		// set text area attributes
-		this.textArea = new JTextArea("This is the way to hash tag in Twitter");				
+		this.textArea = new JTextArea("This is the way to hash tag in Twitter");
+		this.textArea.setAutoscrolls(true);
 		// set pnlText attributes
 		this.pnlText = new JPanel(new BorderLayout());
 		// add text area to panel
@@ -61,6 +63,7 @@ public class mainClass extends JFrame implements ActionListener{
 		btnDeleteFile = new JButton("Delete");
 		btnReadFile = new JButton("Read");
 		btnWriteFile = new JButton("Write");
+		btnPerms = new JButton("Permissions");
 		
 		// set text input of files
 		txtInputFilePath = new JTextField();
@@ -72,7 +75,7 @@ public class mainClass extends JFrame implements ActionListener{
 		lblOutputFile = new JLabel("Output File");
 		
 		// set files' panel's attributes
-		pnlFile = new JPanel(new GridLayout(9, 1));
+		pnlFile = new JPanel(new GridLayout(10, 1, 0, 5));
 		
 		// add file components to panel
 		pnlFile.add(lblFiles);
@@ -84,6 +87,7 @@ public class mainClass extends JFrame implements ActionListener{
 		pnlFile.add(btnWriteFile);
 		pnlFile.add(btnCreateFile);
 		pnlFile.add(btnDeleteFile);
+		pnlFile.add(btnPerms);
 
 		// add components to the frame
 		this.add(pnlBtns, BorderLayout.NORTH);
@@ -101,6 +105,7 @@ public class mainClass extends JFrame implements ActionListener{
 		btnDeleteFile.addActionListener(this);
 		btnReadFile.addActionListener(this);
 		btnWriteFile.addActionListener(this);
+		btnPerms.addActionListener(this);
 	}
 	
 	@Override
@@ -184,6 +189,17 @@ public class mainClass extends JFrame implements ActionListener{
 				lbl.setText("<html><span style='color: red'>Could not write data into file.</span></html>");
 			}
 		}
+		// ====================== btnReadFile Action ======================
+		else if (source == btnPerms) {
+			String path = txtOutputFilePath.getText();
+			
+			try {
+				myFileHandler.setPermission(path);
+				lbl.setText("Successfully Changed Permissions.");
+			} catch (Exception e2) {
+				lbl.setText("<html><span style='color: red'>Could Not Change Permissions. "+ e2.getMessage() +"</span></html>");
+			}
+		}	
 	}
 	
 	

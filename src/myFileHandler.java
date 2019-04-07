@@ -1,6 +1,11 @@
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.PosixFilePermission;
+import java.util.HashSet;
+import java.util.Set;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 
@@ -58,5 +63,31 @@ public class myFileHandler {
 			return false;
 		}
 	   
+	}
+
+	public static boolean setPermission(String path) {
+		
+		try {
+			File file = new File(path);
+			
+		    Set<PosixFilePermission> perms = new HashSet<>();
+		    perms.add(PosixFilePermission.OWNER_READ);
+		    perms.add(PosixFilePermission.OWNER_WRITE);
+		    perms.add(PosixFilePermission.OWNER_EXECUTE);
+
+		    perms.add(PosixFilePermission.OTHERS_READ);
+		    perms.remove(PosixFilePermission.OTHERS_WRITE);
+		    perms.add(PosixFilePermission.OTHERS_EXECUTE);
+
+		    perms.add(PosixFilePermission.GROUP_READ);
+		    perms.add(PosixFilePermission.GROUP_WRITE);
+		    perms.add(PosixFilePermission.GROUP_EXECUTE);
+		    Files.setPosixFilePermissions(file.toPath(), perms);
+		    return true;
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+			return false;
+		}
+		
 	}
 }
