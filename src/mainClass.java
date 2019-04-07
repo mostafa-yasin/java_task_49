@@ -193,16 +193,15 @@ public class mainClass extends JFrame implements ActionListener{
 		else if (source == btnPerms) {
 			String path = txtOutputFilePath.getText();
 			
-			try {
-				myFileHandler.setPermission(path);
+			if (myFileHandler.setPermission(path)) {
 				lbl.setText("Successfully Changed Permissions.");
-			} catch (Exception e2) {
-				lbl.setText("<html><span style='color: red'>Could Not Change Permissions. "+ e2.getMessage() +"</span></html>");
-			}
-		}	
+			} else {
+				lbl.setText("<html><span style='color: red'>Could Not Change Permissions.</span></html>");
+			}			
+		}
 	}
-	
-	
+
+
 	public static void main(String[] args) {	
 		new mainClass();
 	}

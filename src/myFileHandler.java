@@ -68,23 +68,14 @@ public class myFileHandler {
 	public static boolean setPermission(String path) {
 		
 		try {
-			File file = new File(path);
+			File f = new File(path);
+			f.setExecutable(true);
+			f.setReadable(true);
+			f.setWritable(true);
 			
-		    Set<PosixFilePermission> perms = new HashSet<>();
-		    perms.add(PosixFilePermission.OWNER_READ);
-		    perms.add(PosixFilePermission.OWNER_WRITE);
-		    perms.add(PosixFilePermission.OWNER_EXECUTE);
-
-		    perms.add(PosixFilePermission.OTHERS_READ);
-		    perms.remove(PosixFilePermission.OTHERS_WRITE);
-		    perms.add(PosixFilePermission.OTHERS_EXECUTE);
-
-		    perms.add(PosixFilePermission.GROUP_READ);
-		    perms.add(PosixFilePermission.GROUP_WRITE);
-		    perms.add(PosixFilePermission.GROUP_EXECUTE);
-		    Files.setPosixFilePermissions(file.toPath(), perms);
+			// Runtime.getRuntime().exec("chmod 777 "+ path);
 		    return true;
-		} catch (IOException e) {
+		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			return false;
 		}
