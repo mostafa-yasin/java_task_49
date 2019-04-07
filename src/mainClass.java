@@ -9,15 +9,17 @@ public class mainClass extends JFrame implements ActionListener{
 
 	JTextArea textArea;
 
-	JPanel pnlBtns, pnlText, pnlOutput;
+	JPanel pnlBtns, pnlText, pnlFile;
 	JButton btnUpper, btnLower, btnHashtag, btnLocate, btnConcat;
+	JButton btnCreateFile, btnDeleteFile, btnReadFile, btnWriteFile;
+	JTextField txtInputFilePath, txtOutputFilePath;
 
-	JLabel lbl;
+	JLabel lbl, lblFiles, lblInputFile, lblOutputFile;
 
 	public mainClass() {
 		// set frame's attributes
 		super("Application");
-		this.setSize(500, 300);
+		this.setSize(800, 300);
 		this.setResizable(false);
 		this.setVisible(true);
 		this.setLayout(new BorderLayout());
@@ -45,7 +47,7 @@ public class mainClass extends JFrame implements ActionListener{
 		this.textArea = new JTextArea("This is the way to hash tag in Twitter");				
 		// set pnlText attributes
 		this.pnlText = new JPanel(new BorderLayout());
-		// text area
+		// add text area to panel
 		pnlText.add(textArea, BorderLayout.CENTER);
 
 
@@ -53,11 +55,41 @@ public class mainClass extends JFrame implements ActionListener{
 		this.lbl = new JLabel(textArea.getText());
 		lbl.setMinimumSize(new Dimension(100, 200));
 
+		
+		// set file buttons attributes.
+		btnCreateFile = new JButton("Create");
+		btnDeleteFile = new JButton("Delete");
+		btnReadFile = new JButton("Read");
+		btnWriteFile = new JButton("Write");
+		
+		// set text input of files
+		txtInputFilePath = new JTextField();
+		txtOutputFilePath = new JTextField();
+		
+		// set labels of file
+		lblFiles = new JLabel("Files Operations");
+		lblInputFile = new JLabel("Input File");
+		lblOutputFile = new JLabel("Output File");
+		
+		// set files' panel's attributes
+		pnlFile = new JPanel(new GridLayout(9, 1));
+		
+		// add file components to panel
+		pnlFile.add(lblFiles);
+		pnlFile.add(lblInputFile);
+		pnlFile.add(txtInputFilePath);
+		pnlFile.add(btnReadFile);
+		pnlFile.add(lblOutputFile);
+		pnlFile.add(txtOutputFilePath);
+		pnlFile.add(btnWriteFile);
+		pnlFile.add(btnCreateFile);
+		pnlFile.add(btnDeleteFile);
 
-		// add components to the frame	
+		// add components to the frame
 		this.add(pnlBtns, BorderLayout.NORTH);
 		this.add(pnlText, BorderLayout.CENTER);
 		this.add(lbl, BorderLayout.SOUTH);
+		this.add(pnlFile, BorderLayout.EAST);
 
 		// add actions
 		btnUpper.addActionListener(this);
@@ -65,20 +97,28 @@ public class mainClass extends JFrame implements ActionListener{
 		btnHashtag.addActionListener(this);
 		btnLocate.addActionListener(this);
 		btnConcat.addActionListener(this);
+		btnCreateFile.addActionListener(this);
+		btnDeleteFile.addActionListener(this);
+		btnReadFile.addActionListener(this);
+		btnWriteFile.addActionListener(this);
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		
+		// Set Global Settings.
 		Object source = e.getSource();
 		String text = this.textArea.getText();
 		this.lbl.setForeground(Color.green);
+		
+		// ====================== btnUpper Action ======================
 		if(source == btnUpper) {
 			this.lbl.setText(myStringOperations.myUppercase(text));
 		}
+		// ====================== btnLower Action ======================
 		else if(source == btnLower) {
 			this.lbl.setText(myStringOperations.myLowercase(text));
 		}
+		// ====================== btnHashTag Action ======================
 		else if(source == btnHashtag) {
 			try {
 				String txt = myStringOperations.myHashTag(text);
@@ -92,17 +132,61 @@ public class mainClass extends JFrame implements ActionListener{
 			} catch (Exception e2) {
 				this.lbl.setText("<html><h3 style='color: red'>Error Occured..</h3></html>");
 			}
-		} else if (source == btnLocate) {
+		}
+		// ====================== btnLocateAction ======================
+		else if (source == btnLocate) {
 			int twitterIndex = myStringOperations.myLocate(text, "Twitter");
 			int wayIndex = myStringOperations.myLocate(text, "way");
-			this.lbl.setText("<html><h4> \"Twitter\" is at the index:"+ twitterIndex +"<br>\"way\" is at the index: " + wayIndex + "</h4></html>");
-		} else if(source == btnConcat) {
+			this.lbl.setText("<html>\"Twitter\" is at the index:"+ twitterIndex +"<br>\"way\" is at the index: " + wayIndex + "</html>");
+		} 
+		// ====================== btnConcat Action ======================
+		else if(source == btnConcat) {
 			
-			this.lbl.setText("<html><h3>" + this.lbl.getText() + " | This SMS has been entered By User!</h3></html>");
+			this.lbl.setText(this.textArea.getText() + " | This SMS has been entered By User!");
 		}
-		
-		
+		// ====================== btnCreateFile Action ======================
+		else if (source == btnCreateFile) {
+			String path = txtOutputFilePath.getText();
+			if(myFileHandler.create(path)) {
+				lbl.setText("File '" + path + "' Created Successfully");
+			} else {
+				lbl.setText("File Already Exists.");
+			}
+		}
+		// ====================== btnCreateFile Action ======================
+		else if (source == btnDeleteFile) {
+			String path = txtOutputFilePath.getText();
+			
+			if(myFileHandler.delete(path)) {
+				lbl.setText("File " + path + " was successfully deleted.");
+			} else {
+				lbl.setText("<html><span style='color: red'>File " + path + " does not exist.</span></html>.");
+			}
+		}
+		// ====================== btnReadFile Action ======================
+		else if(source == btnReadFile) {
+			String path = txtInputFilePath.getText(), fileText = myFileHandler.read(path);
+			if(fileText != null) {
+				textArea.setText(fileText);
+				lbl.setText("Read from file");
+			} else {
+				lbl.setText("<html><span style='color: red'>Either file is empty or does not exist</span></html>");
+			}
+		}
+		// ====================== btnReadFile Action ======================
+		else if(source == btnWriteFile) {
+			String path = txtOutputFilePath.getText(),
+					output = lbl.getText();
+			
+			if(myFileHandler.write(path, output)) {
+				lbl.setText("Data was successfully written into the file " + path);
+			} else {
+				lbl.setText("<html><span style='color: red'>Could not write data into file.</span></html>");
+			}
+		}
 	}
+	
+	
 	public static void main(String[] args) {	
 		new mainClass();
 	}

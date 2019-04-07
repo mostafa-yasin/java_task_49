@@ -1,0 +1,3 @@
+Hello, This is data written into a 
+file
+here!
